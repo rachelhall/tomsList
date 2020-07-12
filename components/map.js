@@ -5,8 +5,7 @@ import Flag from "./flag";
 import MapView from "react-native-maps";
 import { Marker } from "react-native-maps";
 
-const Map = ({ latitude, longitude }) => {
-  console.log(latitude);
+const Map = ({ latitude, longitude, navigation }) => {
   return (
     <View>
       <MapView

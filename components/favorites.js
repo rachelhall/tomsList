@@ -9,48 +9,21 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 
-const Feed = ({ navigation, favorites, setFavorites }) => {
+const Favorites = ({ navigation }) => {
   const [houses, setHouses] = useState();
-
-  useEffect(() => {
-    fetchHouseData();
-  }, []);
-
-  const wonkyURL = `https://api.bridgedataoutput.com/api/v2/OData/test/Property?access_token=${access_token}`;
-  const URL = `https://api.bridgedataoutput.com/api/v2/rets/test/search?SearchType=Property&Query=(StandardStatus=Active)`;
-
-  const access_token = `aa22b49503c2931f1d963774210d0155`;
-  const fetchHouseData = async (query) => {
-    const res = await fetch(URL, {
-      method: "GET",
-    });
-    const data = await res.json();
-    const allHouses = data.value;
-    const storeData = async (value) => {
-      try {
-        const jsonValue = JSON.stringify(value);
-        await AsyncStorage.setItem("@allHouses", jsonValue);
-      } catch (e) {
-        // saving error
-      }
-    };
-
-    storeData(allHouses);
-  };
-
   const getData = async () => {
     try {
-      const JSONdata = await AsyncStorage.getItem("@allHouses");
+      const JSONdata = await AsyncStorage.getItem("@favoriteHouses");
       const allHouses = JSON.parse(JSONdata);
+
       setHouses(allHouses);
     } catch (e) {
-      // error reading value
       console.log(e);
     }
   };
+
   useEffect(() => {
     getData();
-    console.log({ houses });
   }, []);
 
   return (
@@ -135,4 +108,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Feed;
+export default Favorites;

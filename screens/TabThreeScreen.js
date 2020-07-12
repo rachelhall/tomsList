@@ -7,25 +7,12 @@ import { Text, View } from "../components/Themed";
 import MapView from "react-native-maps";
 import { Marker } from "react-native-maps";
 
-export default function TabTwoScreen() {
+import MapFullScreen from "../components/mapFullscreen";
+
+export default function TabTwoScreen(props) {
   return (
     <View style={styles.container}>
-      <MapView
-        style={styles.mapStyle}
-        initialRegion={{
-          latitude: 36.229696,
-          longitude: -86.75706,
-          latitudeDelta: 0.05,
-          longitudeDelta: 0.05,
-        }}
-      >
-        <Marker
-          coordinate={{
-            latitude: 36.229696,
-            longitude: -86.75706,
-          }}
-        />
-      </MapView>
+      <MapFullScreen navigation={props.navigation} />
     </View>
   );
 }

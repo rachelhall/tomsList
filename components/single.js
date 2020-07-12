@@ -14,21 +14,44 @@ import AsyncStorage from "@react-native-community/async-storage";
 
 import { Text, View } from "../components/Themed";
 
+import { TabBarIcon } from "../navigation/BottomTabNavigator";
+
 // components
 import Map from "./map";
 import Details from "./details";
 
 const Single = ({ route, navigation }) => {
   const [favorites, setFavorites] = useState([]);
+  const [color, setColor] = useState("gray");
   const { item } = route.params;
 
-  _storeData = async () => {
+  const addToFavorites = async (item) => {
+    console.log({ favorites });
+
+    setFavorites([item, ...favorites]);
+    console.log(favorites);
+
     try {
-      await AsyncStorage.setItem("@FavoriteHouses", item);
-    } catch (error) {
-      // Error saving data
+      await AsyncStorage.setItem("@favoriteHouses", JSON.stringify(favorites));
+    } catch (err) {
+      console.log(err);
     }
   };
+
+  const getFavorites = async () => {
+    try {
+      const JSONvalue = await AsyncStorage.getItem("@favoriteHouses");
+      const allFavorites = await JSON.parse(JSONvalue);
+      setFavorites(allFavorites);
+      console.log({ allFavorites });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    getFavorites();
+  }, []);
 
   const ListingImage = ({ item }) => {
     return (
@@ -92,22 +115,41 @@ const Single = ({ route, navigation }) => {
       >
         Listing provided by Harbin Houses, Inc. ®{" "}
       </Text>
-      <TouchableOpacity
-        style={styles.iconsContainer}
-        onPress={() => {
-          setFavorites(item);
-        }}
-      >
-        <Text> ♥️</Text>
-        <Text>Add to Favorite</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => navigation.navigate("Map", { item: item })}
-      >
-        <View style={styles.mapContainer}>
-          <Map latitude={item.Latitude} longitude={item.Longitude} />
-        </View>
-      </TouchableOpacity>
+      <View style={styles.iconsContainer}>
+        <TouchableOpacity
+          style={styles.singleIcon}
+          onPress={() => {
+            addToFavorites(item);
+            setColor("red");
+          }}
+        >
+          <TabBarIcon name="ios-heart" color={color} />
+          <Text style={{ color: "#999", fontSize: 10, marginTop: 4 }}>
+            Add Favorite
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.singleIcon}
+          onPress={() => {
+            setColor("gray");
+          }}
+        >
+          <TabBarIcon name="ios-close" color={"gray"} />
+          <Text style={{ color: "#999", fontSize: 10, marginTop: 4 }}>
+            Remove Favorite
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.mapContainer}>
+        <Map
+          latitude={item.Latitude}
+          longitude={item.Longitude}
+          navigation={navigation}
+        />
+      </View>
+
       <Details item={item} />
     </ScrollView>
   );
@@ -161,15 +203,17 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   iconsContainer: {
+    flexDirection: "row",
     marginVertical: 20,
     paddingVertical: 20,
     borderTopWidth: 1,
     borderTopColor: "#999",
     borderBottomWidth: 1,
     borderBottomColor: "#999",
-    justifyContent: "center",
+    justifyContent: "space-around",
     alignItems: "center",
   },
+  singleIcon: { alignItems: "center" },
   mapContainer: {
     alignItems: "center",
   },
