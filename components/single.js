@@ -21,21 +21,48 @@ import Map from "./map";
 import Details from "./details";
 
 const Single = ({ route, navigation }) => {
-  const [favorites, setFavorites] = useState([]);
+  const [favorites, setFavorites] = useState();
   const [color, setColor] = useState("gray");
   const { item } = route.params;
 
   const addToFavorites = async (item) => {
+    console.log({ item });
+    console.log({ favorites });
+    if (favorites.length === 0) {
+      setFavorites([item]);
+    } else {
+      setFavorites([...favorites, item]);
+      console.log(`favorites.length`, favorites.length);
+    }
     console.log({ favorites });
 
-    setFavorites([item, ...favorites]);
-    console.log(favorites);
+    const favoritesNoDuplicates = new Set(favorites);
+    console.log({ favoritesNoDuplicates });
 
     try {
-      await AsyncStorage.setItem("@favoriteHouses", JSON.stringify(favorites));
+      await AsyncStorage.setItem(
+        "@favoriteHouses",
+        JSON.stringify(favoritesNoDuplicates)
+      );
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const removeFavorite = async (id) => {
+    const filteredFavorites = favorites.filter((item) => item.ListingId !== id);
+    setFavorites(filteredFavorites);
+    const favoritesNoDuplicates = new Set(favorites);
+
+    try {
+      await AsyncStorage.setItem(
+        "@favoriteHouses",
+        JSON.stringify(favoritesNoDuplicates)
+      );
+    } catch (e) {
+      console.log(e);
+    }
+    getFavorites();
   };
 
   const getFavorites = async () => {
@@ -132,6 +159,7 @@ const Single = ({ route, navigation }) => {
         <TouchableOpacity
           style={styles.singleIcon}
           onPress={() => {
+            removeFavorite(item.ListingId);
             setColor("gray");
           }}
         >

@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Text,
   View,
+  Dimensions,
 } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 
@@ -23,7 +24,7 @@ const Favorites = ({ navigation }) => {
   };
 
   useEffect(() => {
-    getData();
+    // getData();
   }, []);
 
   return (
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     justifyContent: "flex-end",
     height: 200,
-    width: 300,
+    width: Dimensions.get("window").width - 16,
   },
   listing: {
     padding: 10,

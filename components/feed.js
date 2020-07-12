@@ -8,6 +8,7 @@ import {
   View,
 } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
+import { Dimensions } from "react-native";
 
 const Feed = ({ navigation, favorites, setFavorites }) => {
   const [houses, setHouses] = useState();
@@ -16,8 +17,7 @@ const Feed = ({ navigation, favorites, setFavorites }) => {
     fetchHouseData();
   }, []);
 
-  const wonkyURL = `https://api.bridgedataoutput.com/api/v2/OData/test/Property?access_token=${access_token}`;
-  const URL = `https://api.bridgedataoutput.com/api/v2/rets/test/search?SearchType=Property&Query=(StandardStatus=Active)`;
+  const URL = `https://api.bridgedataoutput.com/api/v2/OData/test/Property?access_token=${access_token}`;
 
   const access_token = `aa22b49503c2931f1d963774210d0155`;
   const fetchHouseData = async (query) => {
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     justifyContent: "flex-end",
     height: 200,
-    width: 300,
+    width: Dimensions.get("window").width - 16,
   },
   listing: {
     padding: 10,

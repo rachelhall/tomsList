@@ -19,7 +19,6 @@ const MapFullScreen = ({ navigation }) => {
       const JSONdata = await AsyncStorage.getItem("@allHouses");
       const allHouses = JSON.parse(JSONdata);
       setHouses(allHouses);
-      console.log({ allHouses });
     } catch (e) {
       // error reading value
       console.log(e);
