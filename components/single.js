@@ -19,6 +19,7 @@ import { TabBarIcon } from "../navigation/BottomTabNavigator";
 // components
 import Map from "./map";
 import Details from "./details";
+import { cos } from "react-native-reanimated";
 
 const Single = ({ route, navigation }) => {
   const [favorites, setFavorites] = useState([]);
@@ -44,16 +45,18 @@ const Single = ({ route, navigation }) => {
   }, []);
 
   const addToFavorites = async (item) => {
+    console.log(`item top of function`, item);
     if (
       favorites === null ||
       favorites.length === undefined ||
       favorites === []
     ) {
       setFavorites([item]);
+    } else {
+      setFavorites([...favorites, item]);
+      console.log(`favorites.length`, favorites.length);
+      console.log({ favorites });
     }
-    setFavorites([...favorites, item]);
-    console.log(`favorites.length`, favorites.length);
-    console.log({ favorites });
 
     const uniqueFavorites = [...new Set(favorites)];
 
@@ -72,6 +75,7 @@ const Single = ({ route, navigation }) => {
     } catch (e) {
       console.log(e);
     }
+    setColor("red");
   };
 
   const removeFavorite = async (id) => {
@@ -89,6 +93,9 @@ const Single = ({ route, navigation }) => {
     } catch (e) {
       console.log(e);
     }
+    navigation.navigate("TabOneScreen", {
+      item: item,
+    });
   };
 
   const ListingImage = ({ item }) => {
@@ -158,7 +165,6 @@ const Single = ({ route, navigation }) => {
           style={styles.singleIcon}
           onPress={() => {
             addToFavorites(item);
-            setColor("red");
           }}
         >
           <TabBarIcon name="ios-heart" color={color} />
