@@ -8,28 +8,40 @@ import {
   View,
   Dimensions,
 } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-community/async-storage";
 
 const Favorites = ({ navigation }) => {
-  const [houses, setHouses] = useState();
-  const getData = async () => {
-    try {
-      const JSONdata = await AsyncStorage.getItem("@favoriteHouses");
-      const allHouses = JSON.parse(JSONdata);
+  const [houses, setHouses] = useState([]);
 
-      setHouses(allHouses);
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  useFocusEffect(
+    React.useCallback(() => {
+      const getData = async () => {
+        try {
+          const JSONdata = await AsyncStorage.getItem("@favoriteHouses");
+          const allHouses = JSON.parse(JSONdata);
+          console.log({ allHouses });
+          setHouses([...allHouses]);
+          console.log({ houses });
+        } catch (e) {
+          console.log(e);
+        }
+      };
 
-  useEffect(() => {
-    getData();
-  }, []);
+      return () => getData();
+    }, [])
+  );
+
+  // useEffect(() => {
+  //   navigation.addListener("focus", () => {
+  //     getData();
+  //   });
+  // }, []);
 
   return (
     <FlatList
       data={houses}
+      extraData={houses}
       keyExtractor={(item) => item.ListingId}
       renderItem={({ item }) => (
         <TouchableOpacity

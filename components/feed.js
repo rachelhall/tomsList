@@ -50,7 +50,6 @@ const Feed = ({ navigation, favorites, setFavorites }) => {
   };
   useEffect(() => {
     getData();
-    console.log({ houses });
   }, []);
 
   return (

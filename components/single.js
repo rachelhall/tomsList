@@ -55,8 +55,13 @@ const Single = ({ route, navigation }) => {
     console.log(`favorites.length`, favorites.length);
     console.log({ favorites });
 
+    const uniqueFavorites = [...new Set(favorites)];
+
     try {
-      await AsyncStorage.setItem("@favoriteHouses", JSON.stringify(favorites));
+      await AsyncStorage.setItem(
+        "@favoriteHouses",
+        JSON.stringify(uniqueFavorites)
+      );
     } catch (err) {
       console.log(err);
     }
