@@ -44,37 +44,22 @@ const Single = ({ route, navigation }) => {
     getFavorites();
   }, []);
 
-  const addToFavorites = async (item) => {
-    console.log(`item top of function`, item);
-    if (
-      favorites === null ||
-      favorites.length === undefined ||
-      favorites === []
-    ) {
-      setFavorites([item]);
-    } else {
-      setFavorites([...favorites, item]);
-      console.log(`favorites.length`, favorites.length);
-      console.log({ favorites });
-    }
-
-    const uniqueFavorites = [...new Set(favorites)];
-
+  const persistFavorites = async () => {
     try {
-      await AsyncStorage.setItem(
-        "@favoriteHouses",
-        JSON.stringify(uniqueFavorites)
-      );
+      await AsyncStorage.setItem("@favoriteHouses", JSON.stringify(favorites));
+      console.log(favorites);
     } catch (err) {
       console.log(err);
     }
-    try {
-      const JSONvalue = await AsyncStorage.getItem("@favoriteHouses");
-      const allFavorites = await JSON.parse(JSONvalue);
-      console.log({ allFavorites });
-    } catch (e) {
-      console.log(e);
-    }
+  };
+  useEffect(() => {
+    persistFavorites();
+  }, [favorites]);
+
+  const addToFavorites = async (item) => {
+    const uniqueFavorites = new Set([...favorites, item]);
+
+    setFavorites(Array.from(uniqueFavorites));
     setColor("red");
   };
 

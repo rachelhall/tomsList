@@ -55,7 +55,9 @@ const Feed = ({ navigation, favorites, setFavorites }) => {
   return (
     <FlatList
       data={houses}
-      keyExtractor={(item) => item.ListingId}
+      keyExtractor={(item) =>
+        item.ListingId + item.ListingKey + item.PreviousListPrice
+      }
       renderItem={({ item }) => (
         <TouchableOpacity
           onPress={() =>
