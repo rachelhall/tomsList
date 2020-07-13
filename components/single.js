@@ -21,56 +21,19 @@ import Map from "./map";
 import Details from "./details";
 
 const Single = ({ route, navigation }) => {
-  const [favorites, setFavorites] = useState();
+  const [favorites, setFavorites] = useState([]);
   const [color, setColor] = useState("gray");
   const { item } = route.params;
-
-  const addToFavorites = async (item) => {
-    console.log({ item });
-    console.log({ favorites });
-    if (favorites.length === 0) {
-      setFavorites([item]);
-    } else {
-      setFavorites([...favorites, item]);
-      console.log(`favorites.length`, favorites.length);
-    }
-    console.log({ favorites });
-
-    const favoritesNoDuplicates = new Set(favorites);
-    console.log({ favoritesNoDuplicates });
-
-    try {
-      await AsyncStorage.setItem(
-        "@favoriteHouses",
-        JSON.stringify(favoritesNoDuplicates)
-      );
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const removeFavorite = async (id) => {
-    const filteredFavorites = favorites.filter((item) => item.ListingId !== id);
-    setFavorites(filteredFavorites);
-    const favoritesNoDuplicates = new Set(favorites);
-
-    try {
-      await AsyncStorage.setItem(
-        "@favoriteHouses",
-        JSON.stringify(favoritesNoDuplicates)
-      );
-    } catch (e) {
-      console.log(e);
-    }
-    getFavorites();
-  };
 
   const getFavorites = async () => {
     try {
       const JSONvalue = await AsyncStorage.getItem("@favoriteHouses");
       const allFavorites = await JSON.parse(JSONvalue);
-      setFavorites(allFavorites);
       console.log({ allFavorites });
+      if (allFavorites.length > 0) {
+        console.log({ allFavorites });
+        setFavorites(allFavorites);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -79,6 +42,49 @@ const Single = ({ route, navigation }) => {
   useEffect(() => {
     getFavorites();
   }, []);
+
+  const addToFavorites = async (item) => {
+    if (
+      favorites === null ||
+      favorites.length === undefined ||
+      favorites === []
+    ) {
+      setFavorites([item]);
+    }
+    setFavorites([...favorites, item]);
+    console.log(`favorites.length`, favorites.length);
+    console.log({ favorites });
+
+    try {
+      await AsyncStorage.setItem("@favoriteHouses", JSON.stringify(favorites));
+    } catch (err) {
+      console.log(err);
+    }
+    try {
+      const JSONvalue = await AsyncStorage.getItem("@favoriteHouses");
+      const allFavorites = await JSON.parse(JSONvalue);
+      console.log({ allFavorites });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const removeFavorite = async (id) => {
+    try {
+      const JSONvalue = await AsyncStorage.getItem("@favoriteHouses");
+      const allFavorites = await JSON.parse(JSONvalue);
+      const filteredFavorites = allFavorites.filter(
+        (item) => item.ListingId !== id
+      );
+      console.log(filteredFavorites);
+      await AsyncStorage.setItem(
+        "@favoriteHouses",
+        JSON.stringify(filteredFavorites)
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const ListingImage = ({ item }) => {
     return (

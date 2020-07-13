@@ -27,7 +27,6 @@ const MapFullScreen = ({ navigation }) => {
 
   useEffect(() => {
     getData(setHouses);
-    console.log({ houses });
   }, []);
 
   return (

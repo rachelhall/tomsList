@@ -24,7 +24,7 @@ const Favorites = ({ navigation }) => {
   };
 
   useEffect(() => {
-    // getData();
+    getData();
   }, []);
 
   return (
